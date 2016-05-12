@@ -1,0 +1,21 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : May 12, 2016, 12:03:06 PM
+    Author     : ivelas
+*/
+
+#timeSetter tr :hover {
+    background-color: yellow
+}
+
+#radiusSetter tr :hover {
+    background-color: lime
+}
+
+#timeSetter .selected {
+    background-color: yellow
+}
