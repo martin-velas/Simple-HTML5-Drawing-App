@@ -56,7 +56,7 @@
                                         return $p;
                                     }
                                 }
-                                foreach (["min", "hour", "day", "month", "year"] as $p) {
+                                foreach (array("min", "hour", "day", "month", "year") as $p) {
                             ?>
                                     <tr class="<?php print getClass($p); ?>" onclick="annotationApp.setPeriod('<?php print $p; ?>')">
                                         <td class="palette" width="40px"></td>
