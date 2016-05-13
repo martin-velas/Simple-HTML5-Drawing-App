@@ -8,14 +8,60 @@ and open the template in the editor.
     Author     : ivelas
 */
 
-#timeSetter tr :hover {
-    background-color: yellow
+#timeSetter tr td.palette {
+    border: 1px solid gray;
 }
 
-#radiusSetter tr :hover {
-    background-color: lime
+#timeSetter tr.selected td.picker button {
+    background-color: #AEC6CF;
 }
 
-#timeSetter .selected {
-    background-color: yellow
+#timeSetter button {
+    width=50px;
+}
+
+body {
+    background: #ecf1f4;
+    font-family: Verdana,Geneva,sans-serif;
+}
+
+button {
+	-moz-box-shadow: 0px 10px 14px -7px #276873;
+	-webkit-box-shadow: 0px 10px 14px -7px #276873;
+	box-shadow: 0px 10px 14px -7px #276873;
+	background-color:#599bb3;
+	-moz-border-radius:8px;
+	-webkit-border-radius:8px;
+	border-radius:8px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:14px;
+	font-weight:bold;
+	padding:9px 21px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #3d768a;
+}
+button:hover {
+	background-color:#408c99;
+}
+button:active {
+	position:relative;
+	top:1px;
+}
+
+.panel {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+#preloader {
+    background-image: URL(preloader.gif);
+    width: 64px;
+    height: 64px;
+}
+
+.hide {
+    display: none;
 }

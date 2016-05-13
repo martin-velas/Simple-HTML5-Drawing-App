@@ -8,7 +8,7 @@
     <!--[if IE]><script type="text/javascript" src="excanvas.js"></script><![endif]-->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
     <script type="text/javascript" src="html5-canvas-drawing-app.js"></script>
-        
+
     <?php
         function random_file_from($dir) {
             $original_dir = getcwd();
@@ -29,36 +29,74 @@
         $height = $size[1];
     ?>
     
-    <table>
+    <table style="float:left;">
+        <tr><td><div id="canvasDivWithImage"></div></td></tr>
         <tr>
             <td>
-                <div id="canvasDivWithImage"></div>
-            </td>
-            <td>
-                <div id="timeSetter">
-                    <table border="1">
-                        <tr class="selected" onclick="annotationApp.setPeriod('min')"><td>1 minute</td></tr>
-                        <tr onclick="annotationApp.setPeriod('hour')"><td>1 hour</td></tr>
-                        <tr onclick="annotationApp.setPeriod('day')"><td>1 day</td></tr>
-                        <tr onclick="annotationApp.setPeriod('month')"><td>1 month</td></tr>
-                        <tr onclick="annotationApp.setPeriod('year')"><td>1 year</td></tr>
-                    </table>
+                <div id="exportPanel" align="center" class="panel">
+                    <button onclick="annotationApp.export()">Finished</button>
+                    <div class="hide" id="preloader" align="center"></div>
                 </div>
             </td>
-            <td>
-                <div id="radiusSetter">
-                    <table border="1">
-                        <tr><td onclick="annotationApp.updateRadius(5)">++ ++</td></tr>
-                        <tr><td onclick="annotationApp.updateRadius(-5)">-- --</td></tr>
-                    </table>
-                </div>
-            </td>
-            <td onclick="annotationApp.clear()">Clear</td>
         </tr>
     </table>
-    <button onclick="annotationApp.export()">Save</button>
+    
+    <div id="controlPanel">
+        <table>
+            <tr>
+                <td>
+                    <div class="panel">
+                        <p>Object will not be in the scene after:</p>
+                        <table id="timeSetter">
+                            <?php
+                                function getClass($p) {
+                                    if($p == "min") {
+                                        return "min selected";
+                                    } else {
+                                        return $p;
+                                    }
+                                }
+                                foreach (["min", "hour", "day", "month", "year"] as $p) {
+                            ?>
+                                    <tr class="<?php print getClass($p); ?>" onclick="annotationApp.setPeriod('<?php print $p; ?>')">
+                                        <td class="palette" width="40px"></td>
+                                        <td class="picker"><button>1 <?php print $p; ?></button></td>
+                                    </tr>
+                            <?php
+                                }
+                            ?>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><div class="panel"><button onclick="annotationApp.undo(10)">Undo step</button></div></td>
+            </tr>
+            <tr>
+                <td><div class="panel"><button onclick="annotationApp.clear()">Clear all</button></div></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="panel">
+                        <table>
+                            <tr><td>Marker size:</td></tr>
+                            <tr>
+                                <td>
+                                    <input onchange="annotationApp.updateRadiusTo(this.value)" type="range" min="3" max="80" value="20"/>
+                                    <div id="radiusMarker"></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
     <script type="text/javascript">
-    	 annotationApp.init(<?php print '"'.$image_filename.'"' . "," . $width . "," . $height; ?>);
+        ["min", "hour", "day", "month", "year"].forEach(function(p){
+            $("#timeSetter tr." + p + " td.palette").css("background-color", annotationApp.periodToColor(p));
+        });
+    	annotationApp.init(<?php print '"'.$image_filename.'"' . "," . $width . "," . $height; ?>);
     </script>
   </body>
 </html>

@@ -54,12 +54,7 @@ var annotationApp = (function () {
             totalLoadResources = 1, // only background
             curLoadResNum = 0,
             alphaChannel = 1.0,
-            compressionIdx = 0,
             clickIndex = 0,
-            // Clears the canvas.
-            clearCanvas = function () {
-                context.clearRect(0, 0, canvasWidth, canvasHeight);
-            },
             clearAll = function () {
                 context.clearRect(0, 0, canvasWidth, canvasHeight);
                 clickX = [];
@@ -68,6 +63,19 @@ var annotationApp = (function () {
                 clickSize = [];
                 clickDrag = [];
                 paint = false;
+                clickIndex = 0;
+            },
+            undo = function(howMuch) {
+                context.clearRect(0, 0, canvasWidth, canvasHeight);
+                var firstToDelete = clickX.length - howMuch;
+                clickX.splice(firstToDelete, howMuch);
+                clickY.splice(firstToDelete, howMuch);
+                clickPeriod.splice(firstToDelete, howMuch);
+                clickSize.splice(firstToDelete, howMuch);
+                clickDrag.splice(firstToDelete, howMuch);
+                paint = false;
+                clickIndex = 0;
+                redraw();
             },
             // Redraws the canvas.
             redraw = function () {
@@ -113,53 +121,6 @@ var annotationApp = (function () {
 
                 context.globalAlpha = 1; // No IE support
             },
-            compress = function() {
-                var minNewPts = 50;
-                if(clickX.length - compressionIdx < minNewPts)
-                    return;
-                while(compressionIdx < clickX.length-2) {
-                    var skip;
-                    for(skip = 1; compressionIdx+skip+1 < clickX.length; skip++) {
-                        if(!isWithinSameDrag(compressionIdx, compressionIdx+skip+1)) {
-                            skip -= 1;
-                            break;
-                        }
-                        var line = new Line(clickX[compressionIdx], clickY[compressionIdx],
-                                            clickX[compressionIdx+skip+1], clickY[compressionIdx+skip+1]);
-                        var threshold = clickSize[compressionIdx]/4;
-                        var checked;
-                        for(checked = 1; checked <= skip; checked++) {
-                            var distance = line.distanceFromPt(clickX[compressionIdx+checked], clickY[compressionIdx+checked]);
-                            if(distance > threshold) {
-                                break;
-                            }
-                        }
-                        if(checked <= skip) {
-                            skip = checked-1;
-                            break;
-                        }
-                    }
-                    if(skip > 1) {
-                        skipPoints(compressionIdx+1, skip);
-                        compressionIdx += skip+1;
-                    } else {
-                        compressionIdx += 1;
-                    }
-                }
-            },
-            isWithinSameDrag = function(i, j) {
-                return clickSize[i] === clickSize[j] &&
-                        clickPeriod[i] === clickPeriod[j] &&
-                        clickDrag[i] && clickDrag[j];
-            },
-            skipPoints = function(from, howMuch) {
-                console.log("skipping: " + howMuch);
-                clickX.splice(from, howMuch);
-                clickY.splice(from, howMuch);
-                clickDrag.splice(from, howMuch);
-                clickPeriod.splice(from, howMuch);
-                clickSize.splice(from, howMuch);
-            },
             // Adds a point to the drawing array.
             // @param x
             // @param y
@@ -175,15 +136,15 @@ var annotationApp = (function () {
             periodToColor = function (period) {
                 switch (period) {
                     case "min" :
-                        return "rgba(255, 105, 97, " + alphaChannel + ")";
+                        return "rgba(253, 253, 150, " + alphaChannel + ")";
                     case "hour" :
                         return "rgba(244, 154, 194, " + alphaChannel + ")";
                     case "day" :
-                        return "rgba(203, 153, 201, " + alphaChannel + ")";
+                        return "rgba(150, 111, 214, " + alphaChannel + ")";
                     case "month" :
-                        return "rgba(174, 198, 207, " + alphaChannel + ")";
-                    case "year" :
                         return "rgba(119, 158, 203, " + alphaChannel + ")";
+                    case "year" :
+                        return "rgba(119, 190, 119, " + alphaChannel + ")";
                 }
             },
             // Add mouse and touch event listeners to the canvas
@@ -261,12 +222,29 @@ var annotationApp = (function () {
 
                 // Load images
                 resourceLoaded();
+                
+                updateRadiusBy(0);
             },
             setPeriod = function (length) {
                 curPeriod = length;
+                updateRadiusBy(0);
             },
-            updateRadius = function (delta) {
+            updateRadiusBy = function (delta) {
                 currentRadius = Math.max(1, currentRadius + delta);
+                updateRadiusMarker();
+            },
+            updateRadiusTo = function (value) {
+                currentRadius = Math.max(1, value);
+                updateRadiusMarker();
+            },
+            updateRadiusMarker = function () {
+                var marker = document.getElementById("radiusMarker");
+                marker.setAttribute("style", "height:" + currentRadius + "px;\
+                    width:" + currentRadius + "px;\
+                    -webkit-border-radius:" + currentRadius/2 + "px;\
+                    -moz-border-radius:" + currentRadius/2 + "px;\
+                    border-radius:" + currentRadius/2 + "px;\
+                    background:" + periodToColor(curPeriod));
             },
             exportAnn = function () {
                 var data = {
@@ -285,16 +263,22 @@ var annotationApp = (function () {
 
                 request.onreadystatechange = function () { //Call a function when the state changes.
                     if (request.readyState === 4 && request.status === 200) { // complete and no errors
-                        alert(request.responseText); // some processing here, or whatever you want to do with the response
+                        //alert(request.responseText); // some processing here, or whatever you want to do with the response
+                        window.location="index.php";
                     }
                 };
                 request.send(jsonData);
+                $("#exportPanel button").toggleClass("hide");
+                $("#preloader").toggleClass("hide");
             };
     return {
         init: init,
         setPeriod: setPeriod,
         clear: clearAll,
-        updateRadius: updateRadius,
-        export: exportAnn
+        updateRadiusTo: updateRadiusTo,
+        updateRadiusBy: updateRadiusBy,
+        export: exportAnn,
+        undo: undo,
+        periodToColor: periodToColor
     };
 }());
