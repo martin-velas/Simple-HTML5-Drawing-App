@@ -10,8 +10,21 @@
     <script type="text/javascript" src="html5-canvas-drawing-app.js"></script>
         
     <?php
-        $image = "images_to_annotate/" . $_GET["image"];
-        $size = getimagesize($image);
+        function random_file_from($dir) {
+            $original_dir = getcwd();
+            chdir($dir);
+            $files = glob('*.*');
+            chdir($original_dir);
+            $file = array_rand($files);
+            return $files[$file];
+        }
+    
+        $data_directory = "images_to_annotate/";
+        $image = random_file_from($data_directory);
+        session_start();
+        $_SESSION["image"] = $image;
+        $image_filename = $data_directory . $image;
+        $size = getimagesize($image_filename);
         $width = $size[0];
         $height = $size[1];
     ?>
@@ -45,8 +58,7 @@
     </table>
     <button onclick="annotationApp.export()">Save</button>
     <script type="text/javascript">
-    	 annotationApp.init(<?php print '"'.$image.'"' . "," . $width . "," . $height; ?>);
+    	 annotationApp.init(<?php print '"'.$image_filename.'"' . "," . $width . "," . $height; ?>);
     </script>
-    
   </body>
 </html>
