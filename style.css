@@ -8,6 +8,22 @@ and open the template in the editor.
     Author     : ivelas
 */
 
+#canvasDivWithImage canvas.tiny {
+    cursor:  url(cursor-tiny.png) 8 8, crosshair;
+}
+
+#canvasDivWithImage canvas.small {
+    cursor:  url(cursor-small.png) 16 16, crosshair;
+}
+
+#canvasDivWithImage canvas.normal {
+    cursor:  url(cursor-normal.png) 24 24, crosshair;
+}
+
+#canvasDivWithImage canvas.big {
+    cursor:  url(cursor-big.png) 31 31, crosshair;
+}
+
 #timeSetter tr td.palette {
     border: 1px solid gray;
 }

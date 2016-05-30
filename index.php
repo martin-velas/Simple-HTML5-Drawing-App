@@ -46,7 +46,7 @@
             <tr>
                 <td>
                     <div class="panel">
-                        <p>Object will not be in the scene after:</p>
+                        <p>Please mark all the objects that are likely to disappear from the scene before:</p>
                         <table id="timeSetter">
                             <?php
                                 function getClass($p) {
@@ -70,25 +70,34 @@
                 </td>
             </tr>
             <tr>
-                <td><div class="panel"><button onclick="annotationApp.undo(10)">Undo step</button></div></td>
-            </tr>
-            <tr>
-                <td><div class="panel"><button onclick="annotationApp.clear()">Clear all</button></div></td>
-            </tr>
-            <tr>
                 <td>
                     <div class="panel">
                         <table>
                             <tr><td>Marker size:</td></tr>
+                        </table>
+                        <table>
                             <tr>
-                                <td>
-                                    <input onchange="annotationApp.updateRadiusTo(this.value)" type="range" min="3" max="80" value="20"/>
-                                    <div id="radiusMarker"></div>
-                                </td>
+                                <?php
+                                    foreach (array("Tiny", "Small", "Normal", "Big") as $scale) {
+                                    ?>
+                                        <td>
+                                            <div id="radiusMarker<?php print $scale; ?>" 
+                                                 onclick="annotationApp.updateRadiusTo('<?php print $scale; ?>')">
+                                            </div>
+                                        </td>
+                                    <?php
+                                    }
+                                ?>
                             </tr>
                         </table>
                     </div>
                 </td>
+            </tr>
+            <tr>
+                <td><div class="panel"><button onclick="annotationApp.undo(10)">Undo step</button></div></td>
+            </tr>
+            <tr>
+                <td><div class="panel"><button onclick="annotationApp.clear()">Clear all</button></div></td>
             </tr>
         </table>
     </div>

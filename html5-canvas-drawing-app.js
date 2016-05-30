@@ -43,7 +43,7 @@ var annotationApp = (function () {
             curPeriod,
             canvasWidth,
             canvasHeight,
-            currentRadius = 20,
+            currentRadius = "Small",
             clickX = [],
             clickY = [],
             clickPeriod = [],
@@ -53,7 +53,7 @@ var annotationApp = (function () {
             curPeriod = "min",
             totalLoadResources = 1, // only background
             curLoadResNum = 0,
-            alphaChannel = 1.0,
+            alphaChannel = 0.03,
             clickIndex = 0,
             clearAll = function () {
                 context.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -108,7 +108,7 @@ var annotationApp = (function () {
                     }
                     context.lineTo(clickX[clickIndex], clickY[clickIndex]);
 
-                    context.strokeStyle = periodToColor(clickPeriod[clickIndex]);
+                    context.strokeStyle = periodToColor(clickPeriod[clickIndex], true);
                     context.lineCap = "round";
                     context.lineJoin = "round";
                     context.lineWidth = radius;
@@ -130,21 +130,22 @@ var annotationApp = (function () {
                 clickX.push(x);
                 clickY.push(y);
                 clickPeriod.push(curPeriod);
-                clickSize.push(currentRadius);
+                clickSize.push(getRadiusMarkerSize(currentRadius));
                 clickDrag.push(dragging);
             },
-            periodToColor = function (period) {
+            periodToColor = function (period, transparent) {
+                var alpha = transparent ? alphaChannel : 1.0;
                 switch (period) {
                     case "min" :
-                        return "rgba(253, 253, 150, " + alphaChannel + ")";
+                        return "rgba(253, 253, 150, " + alpha + ")";
                     case "hour" :
-                        return "rgba(244, 154, 194, " + alphaChannel + ")";
+                        return "rgba(244, 154, 194, " + alpha + ")";
                     case "day" :
-                        return "rgba(150, 111, 214, " + alphaChannel + ")";
+                        return "rgba(150, 111, 214, " + alpha + ")";
                     case "month" :
-                        return "rgba(119, 158, 203, " + alphaChannel + ")";
+                        return "rgba(119, 158, 203, " + alpha + ")";
                     case "year" :
-                        return "rgba(119, 190, 119, " + alphaChannel + ")";
+                        return "rgba(119, 190, 119, " + alpha + ")";
                 }
             },
             // Add mouse and touch event listeners to the canvas
@@ -211,6 +212,7 @@ var annotationApp = (function () {
                 canvas.setAttribute('width', canvasWidth);
                 canvas.setAttribute('height', canvasHeight);
                 canvas.setAttribute('id', 'canvas');
+                canvas.setAttribute('class', 'small');
                 canvas.setAttribute('style', "background-image: URL(" + backgroundImagePath + ")");
                 document.getElementById('canvasDivWithImage').appendChild(canvas);
                 if (typeof G_vmlCanvasManager !== "undefined") {
@@ -223,28 +225,39 @@ var annotationApp = (function () {
                 // Load images
                 resourceLoaded();
                 
-                updateRadiusBy(0);
+                updateRadiusMarker();
             },
             setPeriod = function (length) {
                 curPeriod = length;
-                updateRadiusBy(0);
-            },
-            updateRadiusBy = function (delta) {
-                currentRadius = Math.max(1, currentRadius + delta);
                 updateRadiusMarker();
             },
             updateRadiusTo = function (value) {
-                currentRadius = Math.max(1, value);
+                currentRadius = value;
                 updateRadiusMarker();
             },
+            getRadiusMarkerSize = function (scale) {
+                switch(scale) {
+                    case "Tiny" : return 15;
+                    case "Small" : return 30;
+                    case "Normal" : return 45;
+                    case "Big" : return 60;
+                }
+            },
             updateRadiusMarker = function () {
-                var marker = document.getElementById("radiusMarker");
-                marker.setAttribute("style", "height:" + currentRadius + "px;\
-                    width:" + currentRadius + "px;\
-                    -webkit-border-radius:" + currentRadius/2 + "px;\
-                    -moz-border-radius:" + currentRadius/2 + "px;\
-                    border-radius:" + currentRadius/2 + "px;\
-                    background:" + periodToColor(curPeriod));
+                var scales = ["Tiny", "Small", "Normal", "Big"];
+                scales.forEach(function(s) {
+                    var id = "radiusMarker" + s;
+                    var marker = document.getElementById(id);
+                    var radius = getRadiusMarkerSize(s);
+                    var color = (s === currentRadius) ? periodToColor(curPeriod, false) : "rgba(200, 200, 200, 1.0)";
+                    marker.setAttribute("style", "height:" + radius + "px;\
+                        width:" + radius + "px;\
+                        -webkit-border-radius:" + radius/2 + "px;\
+                        -moz-border-radius:" + radius/2 + "px;\
+                        border-radius:" + radius/2 + "px;\
+                        background:" + color);
+                });
+                canvas.setAttribute('class', currentRadius.toLowerCase());
             },
             exportAnn = function () {
                 var data = {
@@ -276,7 +289,6 @@ var annotationApp = (function () {
         setPeriod: setPeriod,
         clear: clearAll,
         updateRadiusTo: updateRadiusTo,
-        updateRadiusBy: updateRadiusBy,
         export: exportAnn,
         undo: undo,
         periodToColor: periodToColor
