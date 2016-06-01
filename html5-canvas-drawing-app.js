@@ -146,6 +146,8 @@ var annotationApp = (function () {
                         return "rgba(119, 158, 203, " + alpha + ")";
                     case "year" :
                         return "rgba(119, 190, 119, " + alpha + ")";
+                    case "erase" :
+                        return "rgba(0, 0, 0, 0)";
                 }
             },
             // Add mouse and touch event listeners to the canvas
@@ -277,7 +279,7 @@ var annotationApp = (function () {
                 request.onreadystatechange = function () { //Call a function when the state changes.
                     if (request.readyState === 4 && request.status === 200) { // complete and no errors
                         //alert(request.responseText); // some processing here, or whatever you want to do with the response
-                        window.location="index.php";
+                        window.location="annotator.php";
                     }
                 };
                 request.send(jsonData);

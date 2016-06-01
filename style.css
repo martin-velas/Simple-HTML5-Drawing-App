@@ -81,3 +81,14 @@ button:active {
 .hide {
     display: none;
 }
+
+#lang-switch {
+    margin-top: 200px;
+}
+
+#lang-switch td {
+    text-align:center; 
+    vertical-align:middle;
+    padding: 5px;
+    font-weight: bold;
+}
