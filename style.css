@@ -92,3 +92,27 @@ button:active {
     padding: 5px;
     font-weight: bold;
 }
+
+.tutorial img {
+    width: 100%;
+}
+
+.tutorial td.desc {
+    width: 30%;
+}
+
+.tutorial table, .tutorial th, .tutorial td {
+    border: 1px solid black;
+}
+
+span {
+    font-weight: bold;
+}
+
+.tutorial button {
+    margin: 50px;
+}
+
+.footer {
+    font-size: small;
+}

@@ -53,7 +53,7 @@ var annotationApp = (function () {
             curPeriod = "min",
             totalLoadResources = 1, // only background
             curLoadResNum = 0,
-            alphaChannel = 0.03,
+            alphaChannel = 0.08,
             clickIndex = 0,
             clearAll = function () {
                 context.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -114,7 +114,6 @@ var annotationApp = (function () {
                     context.lineWidth = radius;
                     context.stroke();
                 }
-                clickIndex -= 2;
                 context.closePath();
                 //context.globalCompositeOperation = "source-over";
                 context.restore();

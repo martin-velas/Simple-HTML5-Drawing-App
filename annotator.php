@@ -1,8 +1,10 @@
+<?php header("Content-Type: text/html; charset=UTF-8"); ?>
 <!DOCTYPE html>
 <html>
   <head>
     <title>Dynamic objects annotator</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
   </head>
   <body>
     <!--[if IE]><script type="text/javascript" src="excanvas.js"></script><![endif]-->
@@ -16,8 +18,8 @@
             $lang = $_GET["lang"];
         }
         
-        $dictionary = [
-            "sk" => [
+        $dictionary = array(
+            "sk" => array(
                 "title" => "Prosím, označte objekty, ktoré pravdepodobne zo scény zmiznú za",
                 "min" => "minútu",
                 "hour" => "hodinu",
@@ -28,8 +30,8 @@
                 "undo" => "Vráť posledný ťah",
                 "clear" => "Vymaž všetko",
                 "done" => "Hotovo"
-            ], 
-            "en" => [
+            ), 
+            "en" => array(
                 "title" => "Please mark all the objects that are likely to disappear from the scene before",
                 "min" => "minute",
                 "hour" => "hour",
@@ -40,8 +42,8 @@
                 "undo" => "Undo step",
                 "clear" => "Clear all",
                 "done" => "Finished"
-            ]
-        ];
+            )
+        );
     
         function random_file_from($dir) {
             $original_dir = getcwd();
