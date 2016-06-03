@@ -63,96 +63,102 @@
         $width = $size[0];
         $height = $size[1];
     ?>
-    
-    <table style="float:left;">
+    <table>
         <tr>
             <td>
-                <a href="?lang=en" title="English"><img width="30" src="en_flag.png"></a>
-                <a href="?lang=sk" title="Slovensky"><img width="30" src="sk_flag.png"></a>
+                <table>
+                    <tr>
+                        <td>
+                            <a href="?lang=en" title="English"><img width="30" src="en_flag.png"></a>
+                            <a href="?lang=sk" title="Slovensky"><img width="30" src="sk_flag.png"></a>
+                        </td>
+                    </tr>
+                    <tr><td><div id="canvasDivWithImage"></div></td></tr>
+                    <tr>
+                        <td>
+                            <div id="exportPanel" align="center" class="panel">
+                                <button onclick="annotationApp.export()"><?php print($dictionary[$lang]["done"]); ?></button>
+                                <div class="hide" id="preloader" align="center"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </td>
-        </tr>
-        <tr><td><div id="canvasDivWithImage"></div></td></tr>
-        <tr>
             <td>
-                <div id="exportPanel" align="center" class="panel">
-                    <button onclick="annotationApp.export()"><?php print($dictionary[$lang]["done"]); ?></button>
-                    <div class="hide" id="preloader" align="center"></div>
+                <div id="controlPanel">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="panel">
+                                    <p><?php print($dictionary[$lang]["title"]); ?>:</p>
+                                    <table id="timeSetter">
+                                        <?php
+                                            function getClass($p) {
+                                                if($p == "min") {
+                                                    return "min selected";
+                                                } else {
+                                                    return $p;
+                                                }
+                                            }
+
+                                            function getButtonTitle($p) {
+                                                if($p == "erase") {
+                                                    return "Erase";
+                                                } else if($p == "min") {
+                                                    return "1 minute";
+                                                } else {
+                                                    return "1 " . $p;
+                                                }
+                                            }
+
+                                            foreach (array("min", "hour", "day", "month", "year"/*, "erase"*/) as $p) {
+                                        ?>
+                                                <tr class="<?php print getClass($p); ?>" onclick="annotationApp.setPeriod('<?php print $p; ?>')">
+                                                    <td class="palette" width="40px"></td>
+                                                    <td class="picker"><button><?php print $dictionary[$lang][$p]; ?></button></td>
+                                                </tr>
+                                        <?php
+                                            }
+                                        ?>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="panel">
+                                    <table>
+                                        <tr><td><?php print $dictionary[$lang]["marker-size"]; ?></td></tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <?php
+                                                foreach (array("Tiny", "Small", "Normal", "Big") as $scale) {
+                                                ?>
+                                                    <td>
+                                                        <div id="radiusMarker<?php print $scale; ?>" 
+                                                             onclick="annotationApp.updateRadiusTo('<?php print $scale; ?>')">
+                                                        </div>
+                                                    </td>
+                                                <?php
+                                                }
+                                            ?>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="panel"><button onclick="annotationApp.undo(10)"><?php print $dictionary[$lang]["undo"]; ?></button></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="panel"><button onclick="annotationApp.clear()"><?php print $dictionary[$lang]["clear"]; ?></button></div></td>
+                        </tr>
+                    </table>
                 </div>
             </td>
         </tr>
     </table>
-    
-    <div id="controlPanel">
-        <table>
-            <tr>
-                <td>
-                    <div class="panel">
-                        <p><?php print($dictionary[$lang]["title"]); ?>:</p>
-                        <table id="timeSetter">
-                            <?php
-                                function getClass($p) {
-                                    if($p == "min") {
-                                        return "min selected";
-                                    } else {
-                                        return $p;
-                                    }
-                                }
-                                
-                                function getButtonTitle($p) {
-                                    if($p == "erase") {
-                                        return "Erase";
-                                    } else if($p == "min") {
-                                        return "1 minute";
-                                    } else {
-                                        return "1 " . $p;
-                                    }
-                                }
-
-                                foreach (array("min", "hour", "day", "month", "year"/*, "erase"*/) as $p) {
-                            ?>
-                                    <tr class="<?php print getClass($p); ?>" onclick="annotationApp.setPeriod('<?php print $p; ?>')">
-                                        <td class="palette" width="40px"></td>
-                                        <td class="picker"><button><?php print $dictionary[$lang][$p]; ?></button></td>
-                                    </tr>
-                            <?php
-                                }
-                            ?>
-                        </table>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="panel">
-                        <table>
-                            <tr><td><?php print $dictionary[$lang]["marker-size"]; ?></td></tr>
-                        </table>
-                        <table>
-                            <tr>
-                                <?php
-                                    foreach (array("Tiny", "Small", "Normal", "Big") as $scale) {
-                                    ?>
-                                        <td>
-                                            <div id="radiusMarker<?php print $scale; ?>" 
-                                                 onclick="annotationApp.updateRadiusTo('<?php print $scale; ?>')">
-                                            </div>
-                                        </td>
-                                    <?php
-                                    }
-                                ?>
-                            </tr>
-                        </table>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td><div class="panel"><button onclick="annotationApp.undo(10)"><?php print $dictionary[$lang]["undo"]; ?></button></div></td>
-            </tr>
-            <tr>
-                <td><div class="panel"><button onclick="annotationApp.clear()"><?php print $dictionary[$lang]["clear"]; ?></button></div></td>
-            </tr>
-        </table>
-    </div>
     <script type="text/javascript">
         ["min", "hour", "day", "month", "year"].forEach(function(p){
             $("#timeSetter tr." + p + " td.palette").css("background-color", annotationApp.periodToColor(p));
