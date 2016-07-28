@@ -21,7 +21,8 @@
           a farebne rozlíšiť dynamiku objektu - t.j. za aký čas objekt pravdepodobne
           zmizne zo scény, či ide o objekt, ktorý sa v čase mení, ale v scéne zostáva (typicky stromy,
           kríky, kvety menia svoj vzhľad podľa ročných období, a pohybujú sa podľa poveternostných podmienok),
-          alebo ide o rýdzo statický objekt.
+          alebo ide o rýdzo statický objekt. Časti scény ako zem, cesta, trávnik alebo
+          stále budovy sú v rámci tohto experimentu považované za pozadie a nie je teda žiadúce ich označovať.
       </p>
       <h2>Ukážka nástroja:</h2>
       <div>
