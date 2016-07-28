@@ -138,12 +138,14 @@ var annotationApp = (function () {
                     case "min" :
                         return "rgba(253, 253, 150, " + alpha + ")";
                     case "hour" :
-                        return "rgba(244, 154, 194, " + alpha + ")";
+                        return "rgba(255, 179, 71, " + alpha + ")";
                     case "day" :
-                        return "rgba(150, 111, 214, " + alpha + ")";
+                        return "rgba(255, 105, 97, " + alpha + ")";
                     case "month" :
+                        return "rgba(150, 111, 214, " + alpha + ")";
+                    case "static" :
                         return "rgba(119, 158, 203, " + alpha + ")";
-                    case "year" :
+                    case "scatter" :
                         return "rgba(119, 190, 119, " + alpha + ")";
                     case "erase" :
                         return "rgba(0, 0, 0, 0)";

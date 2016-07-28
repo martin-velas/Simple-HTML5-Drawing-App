@@ -17,7 +17,9 @@
         } else {
             $lang = $_GET["lang"];
         }
-        
+
+        $periods = array("min", "hour", "day", "month", "static", "scatter");
+
         $dictionary = array(
             "sk" => array(
                 "title" => "Prosím, označte objekty, ktoré pravdepodobne zo scény zmiznú za",
@@ -25,26 +27,28 @@
                 "hour" => "hodinu",
                 "day" => "ďeň",
                 "month" => "mesiac",
-                "year" => "rok alebo neskôr",
+                "static" => "statický objekt",
+                "scatter" => "premenlivý objekt",
                 "marker-size" => "Veľkosť štetca",
                 "undo" => "Vráť posledný ťah",
                 "clear" => "Vymaž všetko",
                 "done" => "Hotovo"
-            ), 
+            ),
             "en" => array(
                 "title" => "Please mark all the objects that are likely to disappear from the scene before",
                 "min" => "minute",
                 "hour" => "hour",
                 "day" => "day",
                 "month" => "month",
-                "year" => "year or longer",
+                "static" => "static object",
+                "scatter" => "variable object",
                 "marker-size" => "Marker size",
                 "undo" => "Undo step",
                 "clear" => "Clear all",
                 "done" => "Finished"
             )
         );
-    
+
         function random_file_from($dir) {
             $original_dir = getcwd();
             chdir($dir);
@@ -53,7 +57,7 @@
             $file = array_rand($files);
             return $files[$file];
         }
-    
+
         $data_directory = "images_to_annotate/";
         $image = random_file_from($data_directory);
         session_start();
@@ -69,8 +73,8 @@
                 <table>
                     <tr>
                         <td>
-                            <a href="?lang=en" title="English"><img width="30" src="en_flag.png"></a>
-                            <a href="?lang=sk" title="Slovensky"><img width="30" src="sk_flag.png"></a>
+                            <a href="?lang=en" title="English"><img width="30" src="data/en_flag.png"></a>
+                            <a href="?lang=sk" title="Slovensky"><img width="30" src="data/sk_flag.png"></a>
                         </td>
                     </tr>
                     <tr><td><div id="canvasDivWithImage"></div></td></tr>
@@ -101,18 +105,13 @@
                                                 }
                                             }
 
-                                            function getButtonTitle($p) {
-                                                if($p == "erase") {
-                                                    return "Erase";
-                                                } else if($p == "min") {
-                                                    return "1 minute";
-                                                } else {
-                                                    return "1 " . $p;
-                                                }
-                                            }
-
-                                            foreach (array("min", "hour", "day", "month", "year"/*, "erase"*/) as $p) {
+                                            foreach ($periods as $p) {
                                         ?>
+                                                <?php
+                                                    if($p == "scatter" || $p == "static") {
+                                                        ?><tr class="spacing" height="10px"><td/><td/></tr><?php
+                                                    }
+                                                ?>
                                                 <tr class="<?php print getClass($p); ?>" onclick="annotationApp.setPeriod('<?php print $p; ?>')">
                                                     <td class="palette" width="40px"></td>
                                                     <td class="picker"><button><?php print $dictionary[$lang][$p]; ?></button></td>
@@ -136,7 +135,7 @@
                                                 foreach (array("Tiny", "Small", "Normal", "Big") as $scale) {
                                                 ?>
                                                     <td>
-                                                        <div id="radiusMarker<?php print $scale; ?>" 
+                                                        <div id="radiusMarker<?php print $scale; ?>"
                                                              onclick="annotationApp.updateRadiusTo('<?php print $scale; ?>')">
                                                         </div>
                                                     </td>
@@ -160,7 +159,7 @@
         </tr>
     </table>
     <script type="text/javascript">
-        ["min", "hour", "day", "month", "year"].forEach(function(p){
+        <?php echo json_encode($periods); ?>.forEach(function(p){
             $("#timeSetter tr." + p + " td.palette").css("background-color", annotationApp.periodToColor(p));
         });
     	annotationApp.init(<?php print '"'.$image_filename.'"' . "," . $width . "," . $height; ?>);
